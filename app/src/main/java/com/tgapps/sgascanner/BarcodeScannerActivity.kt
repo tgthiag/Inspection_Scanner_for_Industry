@@ -35,9 +35,9 @@ class BarcodeScannerActivity : AppCompatActivity() {
 
         cameraExecutor.shutdown()
     }
-    /**
-     * 1. This function is responsible to request the required CAMERA permission
-     */
+
+
+    //SOLICITA PERMISSÃO PARA CÂMERA
     private fun checkCameraPermission() {
         try {
             val requiredPermissions = arrayOf(Manifest.permission.CAMERA)
@@ -47,22 +47,19 @@ class BarcodeScannerActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * 2. This function will check if the CAMERA permission has been granted.
-     * If so, it will call the function responsible to initialize the camera preview.
-     * Otherwise, it will raise an alert.
-     */
+
+    //CHECANDO PERMISSÃO DA CÂMERA PARA INICIAR
     private fun checkIfCameraPermissionIsGranted() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted: start the preview
+            // PERMITIDO: INICIAR CAMERA PREVIEW
             startCamera()
         } else {
-            // Permission denied
+            // PERMISSÃO NEGADA
             MaterialAlertDialogBuilder(this)
-                .setTitle("Permission required")
-                .setMessage("This application needs to access the camera to process barcodes")
+                .setTitle("Necessita de permissão!")
+                .setMessage("Este app precisa de autorização da câmera para escanear.")
                 .setPositiveButton("Ok") { _, _ ->
-                    // Keep asking for permission until granted
+                    // CONTINUA PEDINDO PERMISSÃO ATÉ A ACEITAÇÃO
                     checkCameraPermission()
                 }
                 .setCancelable(false)
@@ -74,9 +71,7 @@ class BarcodeScannerActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * 3. This function is executed once the user has granted or denied the missing permission
-     */
+   //EXECUTA QUANDO O USUÁRIO RESPONDE A PERMISSÃO DA CAMERA
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -85,23 +80,22 @@ class BarcodeScannerActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         checkIfCameraPermissionIsGranted()
     }
-    /**
-     * This function is responsible for the setup of the camera preview and the image analyzer.
-     */
+
+    //CAMERA PREVIEW E ANALISADOR DE IMAGEM
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
 
-            // Preview
+            // CAMERA PREVIEW
             val preview = Preview.Builder()
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.previewView.surfaceProvider)
                 }
 
-            // Image analyzer
+            // ANALISADOR DE IMAGEM
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
@@ -109,14 +103,14 @@ class BarcodeScannerActivity : AppCompatActivity() {
                     it.setAnalyzer(cameraExecutor, BarcodeAnalyzer(this))
                 }
 
-            // Select back camera as a default
+            // CAMERA TRASEIRA PADRÃO
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
-                // Unbind use cases before rebinding
+                // DESMONTANDO CÂMERA
                 cameraProvider.unbindAll()
 
-                // Bind use cases to camera
+                // REMONTANDO CAMERA
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageAnalyzer
                 )

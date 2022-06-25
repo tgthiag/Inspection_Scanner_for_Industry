@@ -28,7 +28,6 @@ class BarcodeAnalyzer(var ctx: Context) : ImageAnalysis.Analyzer {
             scanner.process(inputImage)
                 .addOnSuccessListener { barcodes ->
                     for (barcode in barcodes) {
-                        Toast.makeText(ctx,barcodes[0].rawValue,Toast.LENGTH_SHORT).show()
                         try {
                             BarcodeToBd().checkDatabases(barcodes[0].rawValue,ctx)
                         }catch (e: Exception){

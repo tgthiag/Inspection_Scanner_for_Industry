@@ -15,9 +15,9 @@ class ActivityResults : AppCompatActivity() {
 
         binding.txtNome.append(intent.getStringExtra("nome"))
         binding.txtMaterial.append(intent.getStringExtra("material"))
-        binding.txtConjunto.append(intent.getStringExtra("conjunto"))
-        binding.txtUnidade.append(intent.getStringExtra("unidade"))
-        binding.txtPacote.append(intent.getStringExtra("pacote"))
+        binding.txtConjunto.append(intent.getStringExtra("CJ"))
+        binding.txtUnidade.append(intent.getStringExtra("PC"))
+        binding.txtPacote.append(intent.getStringExtra("PK"))
 
     }
 }
